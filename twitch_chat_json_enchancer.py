@@ -40,6 +40,13 @@ def parse_iso_datetime(dt_str):
         dt_str = dt_str[:-1] + '+00:00'
     return datetime.fromisoformat(dt_str)
 
+import json
+
+def remove_brackets_as_smiles(data):
+    data['embeddedData']['thirdParty'] = [obj for obj in data['embeddedData']['thirdParty'] if not (isinstance(obj, dict) and obj.get('name') == ')))')]
+    data['embeddedData']['thirdParty'] = [obj for obj in data['embeddedData']['thirdParty'] if not (isinstance(obj, dict) and obj.get('name') == '))')]
+    return data
+
 def add_info_messages(data, max_interval_minutes=10):
     if not data.get("comments"):
         return data
@@ -85,7 +92,7 @@ def main():
     with open(args.input_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    processed_data = add_info_messages(data, args.interval)
+    processed_data = remove_brackets_as_smiles(add_info_messages(data, args.interval))
     
     with open(args.output_file, 'w', encoding='utf-8') as f:
         json.dump(processed_data, f, ensure_ascii=False, indent=2)
