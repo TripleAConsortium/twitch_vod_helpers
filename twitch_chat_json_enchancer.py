@@ -42,9 +42,12 @@ def parse_iso_datetime(dt_str):
 
 import json
 
-def remove_brackets_as_smiles(data):
+def remove_some_smiles(data):
     data['embeddedData']['thirdParty'] = [obj for obj in data['embeddedData']['thirdParty'] if not (isinstance(obj, dict) and obj.get('name') == ')))')]
     data['embeddedData']['thirdParty'] = [obj for obj in data['embeddedData']['thirdParty'] if not (isinstance(obj, dict) and obj.get('name') == '))')]
+    data['embeddedData']['thirdParty'] = [obj for obj in data['embeddedData']['thirdParty'] if not (isinstance(obj, dict) and obj.get('name') == 'gg')]
+    data['embeddedData']['thirdParty'] = [obj for obj in data['embeddedData']['thirdParty'] if not (isinstance(obj, dict) and obj.get('name') == 'гг')]
+    data['embeddedData']['thirdParty'] = [obj for obj in data['embeddedData']['thirdParty'] if not (isinstance(obj, dict) and obj.get('name') == ':3')]
     return data
 
 def add_biblethump_object(data):
@@ -164,7 +167,7 @@ def main():
     with open(args.input_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    processed_data = add_pogchamp_object(add_comfort_object(add_biblethump_object(remove_brackets_as_smiles(add_info_messages(data, args.interval)))))
+    processed_data = add_pogchamp_object(add_comfort_object(add_biblethump_object(remove_some_smiles(add_info_messages(data, args.interval)))))
     
     with open(args.output_file, 'w', encoding='utf-8') as f:
         json.dump(processed_data, f, ensure_ascii=False, indent=2)
